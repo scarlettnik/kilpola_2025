@@ -1,0 +1,130 @@
+.sidebar-container {
+    width: 15vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    background: #dfdede;
+    padding: 15px;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.15);
+    height: 100vh;
+    overflow-y: auto;
+    font-family: 'Segoe UI', sans-serif;
+    pointer-events: auto;
+    color: #222;
+}
+
+.sidebar-title {
+    font-size: 16px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 4px;
+    font-weight: bold;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.radio-label {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    font-size: 14px;
+    cursor: pointer;
+    position: relative;
+}
+
+.radio-label input[type="radio"] {
+    display: none;
+}
+
+.custom-radio {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #666;
+    border-radius: 50%;
+    margin-right: 8px;
+    position: relative;
+}
+
+.radio-label input[type="radio"]:checked + .custom-radio::after {
+    content: "";
+    width: 6px;
+    height: 6px;
+    background: #222;
+    border-radius: 50%;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+}
+
+.layer-block {
+    background: #f9f9f9;
+    border-left: 6px solid;
+    border-radius: 6px;
+    margin: 10px 0;
+    padding: 10px;
+    transition: background 0.3s ease;
+}
+
+.layer-block:hover {
+    background: #f0f0f0;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    margin: 6px 0;
+    cursor: pointer;
+    position: relative;
+    font-size: 14px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    display: none;
+}
+
+.custom-checkbox {
+    width: 14px;
+    height: 14px;
+    border: 2px solid #666;
+    background: #fff;
+    margin-right: 8px;
+    position: relative;
+    border-radius: 4px;
+}
+
+.checkbox-label input[type="checkbox"]:checked + .custom-checkbox::after {
+    content: "";
+    position: absolute;
+    top: 1px;
+    left: 4px;
+    width: 3px;
+    height: 8px;
+    border: solid #222;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.layer-name {
+    flex-grow: 1;
+}
+
+.layer-tag {
+    background: #ddd;
+    color: #444;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+
+.music-button {
+    width: 15vw;
+}
+.music-control-block {
+    position: absolute;
+    bottom: 10vh;
+}

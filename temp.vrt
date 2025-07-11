@@ -1,0 +1,46 @@
+<VRTDataset rasterXSize="3333" rasterYSize="2656">
+  <VRTRasterBand dataType="Byte" band="1" blockXSize="3333" blockYSize="1">
+    <ColorInterp>Red</ColorInterp>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">./public/cccp_new.png</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="3333" RasterYSize="2656" DataType="Byte" BlockXSize="3333" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="3333" ySize="2656" />
+      <DstRect xOff="0" yOff="0" xSize="3333" ySize="2656" />
+      <ColorTableComponent>1</ColorTableComponent>
+    </ComplexSource>
+  </VRTRasterBand>
+  <VRTRasterBand dataType="Byte" band="2" blockXSize="3333" blockYSize="1">
+    <ColorInterp>Green</ColorInterp>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">./public/cccp_new.png</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="3333" RasterYSize="2656" DataType="Byte" BlockXSize="3333" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="3333" ySize="2656" />
+      <DstRect xOff="0" yOff="0" xSize="3333" ySize="2656" />
+      <ColorTableComponent>2</ColorTableComponent>
+    </ComplexSource>
+  </VRTRasterBand>
+  <VRTRasterBand dataType="Byte" band="3" blockXSize="3333" blockYSize="1">
+    <ColorInterp>Blue</ColorInterp>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">./public/cccp_new.png</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="3333" RasterYSize="2656" DataType="Byte" BlockXSize="3333" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="3333" ySize="2656" />
+      <DstRect xOff="0" yOff="0" xSize="3333" ySize="2656" />
+      <ColorTableComponent>3</ColorTableComponent>
+    </ComplexSource>
+  </VRTRasterBand>
+  <VRTRasterBand dataType="Byte" band="4" blockXSize="3333" blockYSize="1">
+    <ColorInterp>Alpha</ColorInterp>
+    <ComplexSource>
+      <SourceFilename relativeToVRT="1">./public/cccp_new.png</SourceFilename>
+      <SourceBand>1</SourceBand>
+      <SourceProperties RasterXSize="3333" RasterYSize="2656" DataType="Byte" BlockXSize="3333" BlockYSize="1" />
+      <SrcRect xOff="0" yOff="0" xSize="3333" ySize="2656" />
+      <DstRect xOff="0" yOff="0" xSize="3333" ySize="2656" />
+      <ColorTableComponent>4</ColorTableComponent>
+    </ComplexSource>
+  </VRTRasterBand>
+</VRTDataset>
