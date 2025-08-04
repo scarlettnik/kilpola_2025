@@ -12,7 +12,14 @@ import ReactDOMServer from 'react-dom/server';
 import SidebarLayerControl from "./SidebarContorl.jsx";
 import HistoricalLayer from "./HistoricalLayer.jsx";
 import EraMusicPlayer from "./EraMusicPlayer.jsx";
-import {ERA_COLORS, GETGEOJSONBOUNDS, HISTORICAL_LAYERS, LIGHTEN_COLOR} from "./Constants.jsx";
+import {
+    ERA_COLORS,
+    GETGEOJSONBOUNDS,
+    HISTORICAL_LAYERS, INITIAL_ZOOM,
+    LIGHTEN_COLOR, MAX_ZOOM, MIN_ZOOM,
+    SATELLITE_MAP,
+    VECTOR_MAP
+} from "../constants.jsx";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -32,8 +39,6 @@ const MapClickHandler = ({ onClick }) => {
 const MapView = ({
                      historicalLayers = HISTORICAL_LAYERS,
                      showBaseMap = true,
-                     initialZoom = 13,
-                     minZoom = 10
                  }) => {
     const [layers, setLayers] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -237,7 +242,7 @@ const MapView = ({
         <div style={{ position:"relative", height:"100%", width:"100%", overflow: 'hidden'}}>
             <SidebarLayerControl
                 baseLayers={[
-                    { key: 'osm', name: 'OpenStreetMap' },
+                    { key: 'osm', name: 'Яндекс карта' },
                     { key: 'esri', name: 'Спутник' }
                 ]}
                 selectedBase={selectedBaseLayer}
@@ -264,25 +269,27 @@ const MapView = ({
                     mapRef.current = map;
                 }}
                 center={[61.18474,29.97479]}
-                zoom={initialZoom}
-                minZoom={minZoom}
+                zoom={INITIAL_ZOOM}
+                minZoom={MIN_ZOOM}
                 style={{ height:"100%", width:"100%" }}
-                maxZoom={19}
+                maxZoom={MAX_ZOOM}
                 attributionControl={false}
             >
                 <MapClickHandler onClick={handleMapClick} />
-                <ZoomControl position="topright" />
+                <ZoomControl position="bottomright" />
 
                 {selectedBaseLayer === 'osm' && (
                     <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        url={VECTOR_MAP}
+                        // url="http://192.168.2.87:85/Personal_Data/kilpola_2025/yand_map/{z}/{x}/{y}.png"
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     />
                 )}
 
                 {selectedBaseLayer === 'esri' && (
                     <TileLayer
-                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+                        url={SATELLITE_MAP}
+                        //url="http://192.168.2.87:85/Personal_Data/kilpola_2025/bing_satellite/{z}/{x}/{y}.png"
                         attribution='Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
                     />
                 )}

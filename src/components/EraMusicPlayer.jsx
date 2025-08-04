@@ -1,12 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-
-
-export const eraMusic = {
-    "Карельский период": "/music/kar.mp3",
-    "Финский период": "/music/fin.m4a",
-    "Советский период": "/music/sov.mp3",
-    "Современный период": "/music/modern.mp3",
-};
+import {ERA_MUSIC} from "../constants.jsx";
 
 const EraMusicPlayer = ({ activeEra, musicPaused, onMusicPause }) => {
     const audioRef = useRef(null);
@@ -34,7 +27,7 @@ const EraMusicPlayer = ({ activeEra, musicPaused, onMusicPause }) => {
             try {
                 // Если музыка уже играет - ничего не делаем
                 if (audioRef.current &&
-                    audioRef.current.src.endsWith(eraMusic[activeEra]) &&
+                    audioRef.current.src.endsWith(ERA_MUSIC[activeEra]) &&
                     !audioRef.current.paused) {
                     return;
                 }
@@ -44,7 +37,7 @@ const EraMusicPlayer = ({ activeEra, musicPaused, onMusicPause }) => {
                     audioRef.current.currentTime = 0;
                 }
 
-                const audio = new Audio(eraMusic[activeEra]);
+                const audio = new Audio(ERA_MUSIC[activeEra]);
                 audio.loop = true;
                 audioRef.current = audio;
 

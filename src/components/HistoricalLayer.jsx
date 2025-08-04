@@ -1,6 +1,7 @@
 import {FeatureGroup, GeoJSON, TileLayer} from "react-leaflet";
 import L from "leaflet";
 import React from "react";
+import {HISTORICAL_MAP, HISTORICAL_MAX_ZOOM, HISTORICAL_MIN_ZOOM, HISTORICAL_OPACITY} from "../constants.jsx";
 
 const HistoricalLayer = ({
                              layer,
@@ -16,16 +17,19 @@ const HistoricalLayer = ({
     const showMap = visibleHistorical[key] && layer.title;
     const showOverlays = visibleOverlays[key];
 
+    console.log(layer.title)
+
     return (
         <>
             {showMap && (
                 <TileLayer
                     key={`map-${key}`}
-                    url={`http://192.168.2.110:8080/Personal_Data/Lichnaya_pomojka_Antonova_Sergeya/${layer.title}/tiles/{z}/{x}/{y}.png`}
+                    url={`${HISTORICAL_MAP}/${layer.title}/{z}/{x}/{y}.png`}
+                    // url={`http://192.168.2.110:8080/Personal_Data/Lichnaya_pomojka_Antonova_Sergeya/${layer.title}/tiles/{z}/{x}/{y}.png`}
                     tms={true}
-                    opacity={0.7}
-                    minZoom={0}
-                    maxZoom={20}
+                    opacity={HISTORICAL_OPACITY}
+                    minZoom={HISTORICAL_MIN_ZOOM}
+                    maxZoom={HISTORICAL_MAX_ZOOM}
                 />
             )}
 
