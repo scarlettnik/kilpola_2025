@@ -1,7 +1,7 @@
 # Dockerfile for React Vite Project
 
 # STAGE 1: Build the React application
-FROM node:22-alpine as builder
+FROM node:22-alpine AS builder
 
 # Set the working directory inside the container
 WORKDIR /app
