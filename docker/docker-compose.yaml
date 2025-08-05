@@ -1,6 +1,6 @@
 services:
   web:
-    image: nginx:alpine-stable
+    image: kilpola_map:latest
     container_name: interactive-map
     build:
       dockerfile: docker/Dockerfile
