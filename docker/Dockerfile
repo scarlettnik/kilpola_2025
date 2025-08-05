@@ -16,6 +16,9 @@ RUN npm ci
 # Copy the rest of the application source code
 COPY . .
 
+ARG VITE_USE_OFFLINE_ASSETS
+ENV VITE_USE_OFFLINE_ASSETS=${VITE_USE_OFFLINE_ASSETS}
+
 # Build the application
 # This will create a 'dist' folder with the production-ready files
 RUN npm run build

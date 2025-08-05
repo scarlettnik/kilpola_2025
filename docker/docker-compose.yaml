@@ -1,0 +1,15 @@
+services:
+  web:
+    image: nginx:alpine-stable
+    container_name: interactive-map
+    build:
+      dockerfile: docker/Dockerfile
+      context: .
+      args:
+        - VITE_USE_OFFLINE_ASSETS=true
+    ports:
+      - "84:80"
+    volumes:
+      - ../../map_tiles:/usr/share/nginx/html/tiles:ro
+
+    restart: unless-stopped
