@@ -10,6 +10,6 @@ services:
     ports:
       - "84:80"
     volumes:
-      - ../../map_tiles:/usr/share/nginx/html/tiles:ro
+      - ../map_tiles:/usr/share/nginx/html/tiles:ro
 
     restart: unless-stopped
