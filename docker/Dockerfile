@@ -19,9 +19,11 @@ COPY . .
 ARG VITE_USE_OFFLINE_ASSETS
 ENV VITE_USE_OFFLINE_ASSETS=${VITE_USE_OFFLINE_ASSETS}
 
+ARG BASE_URL=/
+
 # Build the application
 # This will create a 'dist' folder with the production-ready files
-RUN npm run build
+RUN npm run build -- --base=${BASE_URL}
 
 # STAGE 2: Serve the application using a lightweight web server
 FROM nginx:stable-alpine
