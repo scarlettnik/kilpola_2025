@@ -1,4 +1,4 @@
-export const MAP_BASE = "/tiles";
+export const MAP_BASE = `${import.meta.env.BASE_URL}tiles`;
 
 export const VECTOR_MAP = import.meta.env.VITE_USE_OFFLINE_ASSETS
   ? `${MAP_BASE}/yand_map/{z}/{x}/{y}.png`
@@ -6,7 +6,7 @@ export const VECTOR_MAP = import.meta.env.VITE_USE_OFFLINE_ASSETS
 // prev http://192.168.2.87:85/Personal_Data/kilpola_2025/yand_map/{z}/{x}/{y}.png
 
 export const SATELLITE_MAP = import.meta.env.VITE_USE_OFFLINE_ASSETS
-  ? `${MAP_BASE}/bing_sattelite/{z}/{x}/{y}.png`
+  ? `${MAP_BASE}/bing_satellite/{z}/{x}/{y}.png`
   : "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 
 //prev http://192.168.2.87:85/Personal_Data/kilpola_2025/bing_satellite/{z}/{x}/{y}.png
@@ -23,10 +23,10 @@ export const MIN_ZOOM = 10;
 export const INITIAL_ZOOM = 13;
 
 export const ERA_MUSIC = {
-  "Карельский период": "/music/kar.mp3",
-  "Финский период": "/music/fin.m4a",
-  "Советский период": "/music/sov.mp3",
-  "Современный период": "/music/modern.mp3",
+  "Карельский период": `./music/kar.mp3`,
+  "Финский период": `./music/fin.m4a`,
+  "Советский период": `./music/sov.mp3`,
+  "Современный период": `./music/modern.mp3`,
 };
 
 export const HISTORICAL_LAYERS = [
@@ -35,11 +35,11 @@ export const HISTORICAL_LAYERS = [
     shapes: [
       {
         type: "polygons",
-        zip: "kar/poligons/kar-poligons.zip",
+        zip: `./kar/poligons/kar-poligons.zip`,
         name: "Полигоны",
       },
-      { type: "points", zip: "kar/points/kar-points.zip", name: "Точки" },
-      { type: "lines", zip: "kar/lines/kar-lines.zip", name: "Линии" },
+      { type: "points", zip: "./kar/points/kar-points.zip", name: "Точки" },
+      { type: "lines", zip: "./kar/lines/kar-lines.zip", name: "Линии" },
     ],
   },
   {
@@ -48,11 +48,11 @@ export const HISTORICAL_LAYERS = [
     shapes: [
       {
         type: "polygons",
-        zip: "fin/poligons/fin-poligons.zip",
+        zip: "./fin/poligons/fin-poligons.zip",
         name: "Полигоны",
       },
-      { type: "points", zip: "fin/points/fin-points.zip", name: "Точки" },
-      { type: "lines", zip: "fin/lines/fin-lines.zip", name: "Линии" },
+      { type: "points", zip: "./fin/points/fin-points.zip", name: "Точки" },
+      { type: "lines", zip: "./fin/lines/fin-lines.zip", name: "Линии" },
     ],
   },
   {
@@ -61,17 +61,17 @@ export const HISTORICAL_LAYERS = [
     shapes: [
       {
         type: "polygons",
-        zip: "sov/poligons/sov-poligons.zip",
+        zip: "./sov/poligons/sov-poligons.zip",
         name: "Полигоны",
       },
-      { type: "points", zip: "sov/points/sov-points.zip", name: "Точки" },
-      { type: "lines", zip: "sov/lines/sov-lines.zip", name: "Линии" },
+      { type: "points", zip: "./sov/points/sov-points.zip", name: "Точки" },
+      { type: "lines", zip: "./sov/lines/sov-lines.zip", name: "Линии" },
     ],
   },
   {
     era: "Современный период",
     shapes: [
-      { type: "points", zip: "modern/points/modern-points.zip", name: "Точки" },
+      { type: "points", zip: "./modern/points/modern-points.zip", name: "Точки" },
     ],
   },
 ];
