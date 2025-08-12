@@ -3,7 +3,6 @@ import { useMapEvents } from 'react-leaflet';
 import { Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 
-// Иконка для текущей позиции
 const positionIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
     iconSize: [25, 41],
@@ -13,16 +12,16 @@ const positionIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-const directionIcon = L.divIcon({
+const directionIcon = (heading) => L.divIcon({
     html: `<div style="
-    width: 0; 
-    height: 0; 
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-bottom: 16px solid #3388ff;
-    transform: rotate(0deg);
-    transform-origin: 50% 100%;
-  "></div>`,
+        width: 0; 
+        height: 0; 
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-bottom: 16px solid #3388ff;
+        transform: rotate(${heading}deg);
+        transform-origin: 50% 100%;
+    "></div>`,
     className: '',
     iconSize: [16, 16],
     iconAnchor: [8, 8]
@@ -33,7 +32,6 @@ export const LocationMarker = () => {
     const [heading, setHeading] = useState(null);
     const [error, setError] = useState(null);
     const [watchId, setWatchId] = useState(null);
-    const [compassWatchId, setCompassWatchId] = useState(null);
 
     const map = useMapEvents({
         locationfound(e) {
@@ -62,12 +60,10 @@ export const LocationMarker = () => {
         if ('geolocation' in navigator) {
             const id = navigator.geolocation.watchPosition(
                 (pos) => {
-                    const { latitude, longitude } = pos.coords;
+                    const { latitude, longitude, heading } = pos.coords;
                     updatePosition(L.latLng(latitude, longitude));
-
-                    // Если доступно направление
-                    if (pos.coords.heading) {
-                        setHeading(pos.coords.heading);
+                    if (typeof heading === 'number' && !isNaN(heading)) {
+                        setHeading(heading);
                     }
                 },
                 (err) => {
@@ -83,28 +79,38 @@ export const LocationMarker = () => {
             setWatchId(id);
         }
 
-        if ('ondeviceorientationabsolute' in window) {
-            const compassId = window.addEventListener('deviceorientationabsolute', handleCompass);
-            setCompassWatchId(compassId);
-        } else if ('ondeviceorientation' in window) {
-            const compassId = window.addEventListener('deviceorientation', handleCompass);
-            setCompassWatchId(compassId);
+        const handleOrientation = (event) => {
+            if (event.webkitCompassHeading !== undefined) {
+                setHeading(360 - event.webkitCompassHeading);
+            } else if (event.alpha !== null) {
+                const alpha = event.alpha;
+                if (typeof alpha === 'number') {
+                    setHeading(alpha);
+                }
+            }
+        };
+
+        if (window.DeviceOrientationEvent !== undefined) {
+            if (typeof window.DeviceOrientationEvent.requestPermission === 'function') {
+                // iOS 13+ требуется запрос разрешения
+                window.DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === 'granted') {
+                            window.addEventListener('deviceorientation', handleOrientation, true);
+                        }
+                    })
+                    .catch(console.error);
+            } else {
+                // Для других устройств
+                window.addEventListener('deviceorientation', handleOrientation, true);
+            }
         }
 
         return () => {
             if (watchId) navigator.geolocation.clearWatch(watchId);
-            if (compassWatchId) {
-                window.removeEventListener('deviceorientation', handleCompass);
-                window.removeEventListener('deviceorientationabsolute', handleCompass);
-            }
+            window.removeEventListener('deviceorientation', handleOrientation);
         };
     }, [map]);
-
-    const handleCompass = (event) => {
-        if (event.alpha !== null) {
-            setHeading(event.alpha);
-        }
-    };
 
     if (error) {
         return (
@@ -127,9 +133,7 @@ export const LocationMarker = () => {
             {heading !== null && (
                 <Marker
                     position={position}
-                    icon={directionIcon}
-                    rotationAngle={heading}
-                    rotationOrigin="center"
+                    icon={directionIcon(heading)}
                 >
                     <Popup>Направление: {Math.round(heading)}°</Popup>
                 </Marker>
@@ -137,50 +141,3 @@ export const LocationMarker = () => {
         </>
     ) : null;
 };
-// КНОПКА ЧТОБЫ ВОЗВРАЩАТ К СВОЕМУ МЕСТОПОЛОЖЕНИЮ
-// export const LocateControl = () => {
-//     const map = useMap();
-//     const [isLocating, setIsLocating] = useState(false);
-//
-//     const handleClick = useCallback(() => {
-//         setIsLocating(true);
-//         map.locate({
-//             setView: true,
-//             enableHighAccuracy: true,
-//             timeout: 10000
-//         }).on('locationerror', () => {
-//             setIsLocating(false);
-//             map.openPopup(
-//                 "Не удалось определить местоположение",
-//                 map.getCenter()
-//             );
-//         }).on('locationfound', () => {
-//             setIsLocating(false);
-//         });
-//     }, [map]);
-//
-//     return (
-//         <div className="leaflet-bar leaflet-control">
-//             <a
-//                 className="leaflet-control-locate"
-//                 onClick={handleClick}
-//                 title="Показать мое местоположение"
-//                 style={{
-//                     width: '30px',
-//                     height: '30px',
-//                     lineHeight: '30px',
-//                     display: 'block',
-//                     textAlign: 'center',
-//                     textDecoration: 'none',
-//                     color: '#333',
-//                     backgroundColor: isLocating ? '#e6e6e6' : '#fff',
-//                     cursor: 'pointer'
-//                 }}
-//             >
-//                 <span style={{ fontSize: '20px' }}>
-//                     {isLocating ? '⏳' : '📍'}
-//                 </span>
-//             </a>
-//         </div>
-//     );
-// };

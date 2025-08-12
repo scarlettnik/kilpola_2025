@@ -10,10 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.0.0",
     "file-saver": "^2.0.5",
     "geotiff": "^2.1.4-beta.0",
     "leaflet": "^1.9.4",
     "leaflet-draw": "^1.0.4",
+    "leaflet.locatecontrol": "^0.84.2",
     "plotty": "^0.4.9",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

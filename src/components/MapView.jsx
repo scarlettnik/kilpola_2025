@@ -265,7 +265,6 @@ const MapView = ({
             />
 
             <MapContainer
-
                 zoomControl={false}
                 whenCreated={map => {
                     mapRef.current = map;
