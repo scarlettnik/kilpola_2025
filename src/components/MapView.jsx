@@ -20,6 +20,7 @@ import {
     SATELLITE_MAP,
     VECTOR_MAP
 } from "../constants.jsx";
+import { LocationMarker} from "./CurLocationMarker.jsx";
 
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -264,6 +265,7 @@ const MapView = ({
             />
 
             <MapContainer
+
                 zoomControl={false}
                 whenCreated={map => {
                     mapRef.current = map;
@@ -275,6 +277,7 @@ const MapView = ({
                 maxZoom={MAX_ZOOM}
                 attributionControl={false}
             >
+                <LocationMarker />
                 <MapClickHandler onClick={handleMapClick} />
                 <ZoomControl position="bottomright" />
 
