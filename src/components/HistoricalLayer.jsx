@@ -2,6 +2,7 @@ import {FeatureGroup, GeoJSON, TileLayer} from "react-leaflet";
 import L from "leaflet";
 import React from "react";
 import {HISTORICAL_MAP, HISTORICAL_MAX_ZOOM, HISTORICAL_MIN_ZOOM, HISTORICAL_OPACITY} from "../constants.jsx";
+import '../styles/Layer.css'
 
 const HistoricalLayer = ({
                              layer,
@@ -11,13 +12,12 @@ const HistoricalLayer = ({
                              onFeatureClick,
                              onFeatureMouseover,
                              onFeatureMouseout,
-                             getFeatureStyle
+                             getFeatureStyle,
+                             showLabels
                          }) => {
     const key = `${layer.era}-${index}`;
     const showMap = visibleHistorical[key] && layer.title;
     const showOverlays = visibleOverlays[key];
-
-    console.log(layer.title)
 
     return (
         <>
@@ -25,7 +25,6 @@ const HistoricalLayer = ({
                 <TileLayer
                     key={`map-${key}`}
                     url={`${HISTORICAL_MAP}/${layer.title}/{z}/{x}/{y}.png`}
-                    // url={`http://192.168.2.110:8080/Personal_Data/Lichnaya_pomojka_Antonova_Sergeya/${layer.title}/tiles/{z}/{x}/{y}.png`}
                     tms={true}
                     opacity={HISTORICAL_OPACITY}
                     minZoom={HISTORICAL_MIN_ZOOM}
@@ -40,7 +39,7 @@ const HistoricalLayer = ({
 
                         return (
                             <GeoJSON
-                                key={`${key}-${shapeIndex}`}
+                                key={`${key}-${shapeIndex}-${showLabels}`} // Добавляем showLabels в ключ
                                 data={shape.geojson}
                                 style={(feature) => getFeatureStyle(feature, layer.era)}
                                 onEachFeature={(feature, leafletLayer) => {
@@ -51,10 +50,32 @@ const HistoricalLayer = ({
                                             onFeatureClick(feature, leafletLayer);
                                         }
                                     });
+                                    if (showLabels && feature.properties.name) {
+                                        const label = L.tooltip({
+                                            permanent: true,
+                                            direction: 'bottom',
+                                            className: 'feature-label',
+                                            offset: [0, -5]
+                                        }).setContent(feature.properties.name);
+                                        leafletLayer.bindTooltip(label);
+                                    } else {
+                                        leafletLayer.unbindTooltip();
+                                    }
                                 }}
                                 pointToLayer={(feature, latlng) => {
                                     const style = getFeatureStyle(feature, layer.era);
-                                    return L.circleMarker(latlng, style);
+                                    const marker = L.circleMarker(latlng, style);
+
+                                    if (showLabels && feature.properties.name) {
+                                        marker.bindTooltip(feature.properties.name, {
+                                            permanent: true,
+                                            direction: 'bottom',
+                                            className: 'feature-label',
+                                            offset: [0, -5]
+                                        });
+                                    }
+
+                                    return marker;
                                 }}
                             />
                         );
@@ -64,4 +85,5 @@ const HistoricalLayer = ({
         </>
     );
 };
+
 export default HistoricalLayer;

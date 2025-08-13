@@ -52,6 +52,7 @@ const MapView = ({
     const [visibleOverlays, setVisibleOverlays] = useState({});
     const [activeEra, setActiveEra] = useState(null);
     const [musicPaused, setMusicPaused] = useState(false);
+    const [showLabels, setShowLabels] = useState(false);
 
     const getFeatureType = feature =>
         feature.geometry.type === "Point"
@@ -77,6 +78,8 @@ const MapView = ({
             radius: 6
         };
     }, []);
+
+    console.log(showLabels)
 
     const getHoverStyle = useCallback((feature, era) => {
         const baseStyle = getFeatureStyle(feature, era);
@@ -256,6 +259,8 @@ const MapView = ({
                 activeEra={activeEra}
                 musicPaused={musicPaused}
                 onMusicPause={handleMusicPause}
+                showLabels={showLabels}
+                onToggleLabels={() => setShowLabels(!showLabels)}
             />
 
             <EraMusicPlayer
@@ -276,7 +281,7 @@ const MapView = ({
                 maxZoom={MAX_ZOOM}
                 attributionControl={false}
             >
-                <LocationMarker />
+                {/*<LocationMarker />*/}
                 <MapClickHandler onClick={handleMapClick} />
                 <ZoomControl position="bottomright" />
 
@@ -310,6 +315,7 @@ const MapView = ({
                         }}
                         onFeatureMouseover={handleFeatureMouseover}
                         onFeatureMouseout={handleFeatureMouseout}
+                        showLabels={showLabels}
                     />
                 ))}
             </MapContainer>

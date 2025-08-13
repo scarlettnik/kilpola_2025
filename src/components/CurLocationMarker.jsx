@@ -18,7 +18,7 @@ const directionIcon = (heading) => L.divIcon({
         height: 0; 
         border-left: 8px solid transparent;
         border-right: 8px solid transparent;
-        border-bottom: 16px solid #3388ff;
+        border-bottom: 30px solid #3388ff;
         transform: rotate(${heading}deg);
         transform-origin: 50% 100%;
     "></div>`,
@@ -32,13 +32,19 @@ export const LocationMarker = () => {
     const [heading, setHeading] = useState(null);
     const [error, setError] = useState(null);
     const [watchId, setWatchId] = useState(null);
+    const [permissionDenied, setPermissionDenied] = useState(false);
+    const [orientationOffset, setOrientationOffset] = useState(0);
 
     const map = useMapEvents({
         locationfound(e) {
             updatePosition(e.latlng);
             setError(null);
+            setPermissionDenied(false);
         },
         locationerror(e) {
+            if (e.code === 1) {
+                setPermissionDenied(true);
+            }
             setError("Не удалось определить местоположение");
             console.error("Ошибка геолокации:", e.message);
         }
@@ -47,6 +53,29 @@ export const LocationMarker = () => {
     const updatePosition = (newPos) => {
         setPosition(newPos);
         map.flyTo(newPos, 16);
+    };
+
+    const requestLocationPermission = () => {
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    updatePosition(L.latLng(latitude, longitude));
+                    setError(null);
+                    setPermissionDenied(false);
+                },
+                (err) => {
+                    if (err.code === 1) {
+                        setPermissionDenied(true);
+                    }
+                    setError("Доступ к геолокации запрещен");
+                    console.error("Ошибка доступа:", err);
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        } else {
+            setError("Геолокация не поддерживается вашим браузером");
+        }
     };
 
     useEffect(() => {
@@ -60,13 +89,16 @@ export const LocationMarker = () => {
         if ('geolocation' in navigator) {
             const id = navigator.geolocation.watchPosition(
                 (pos) => {
-                    const { latitude, longitude, heading } = pos.coords;
+                    const { latitude, longitude, heading: geoHeading } = pos.coords;
                     updatePosition(L.latLng(latitude, longitude));
-                    if (typeof heading === 'number' && !isNaN(heading)) {
-                        setHeading(heading);
+                    if (typeof geoHeading === 'number' && !isNaN(geoHeading)) {
+                        setHeading(geoHeading);
                     }
                 },
                 (err) => {
+                    if (err.code === 1) {
+                        setPermissionDenied(true);
+                    }
                     setError("Ошибка отслеживания местоположения");
                     console.error("Ошибка отслеживания:", err);
                 },
@@ -77,46 +109,78 @@ export const LocationMarker = () => {
                 }
             );
             setWatchId(id);
+        } else {
+            setError("Геолокация не поддерживается вашим браузером");
         }
 
-        const handleOrientation = (event) => {
+        const handleDeviceOrientation = (event) => {
             if (event.webkitCompassHeading !== undefined) {
-                setHeading(360 - event.webkitCompassHeading);
+                setHeading(event.webkitCompassHeading);
             } else if (event.alpha !== null) {
                 const alpha = event.alpha;
-                if (typeof alpha === 'number') {
-                    setHeading(alpha);
-                }
+                const orientation = screen.orientation.angle;
+                const newHeading = (360 - alpha + orientation) % 360;
+                setHeading(newHeading);
             }
         };
 
+        const updateScreenOrientation = () => {
+            setOrientationOffset(screen.orientation.angle);
+        };
+
+        // Обработка разрешений для deviceorientation
         if (window.DeviceOrientationEvent !== undefined) {
             if (typeof window.DeviceOrientationEvent.requestPermission === 'function') {
-                // iOS 13+ требуется запрос разрешения
                 window.DeviceOrientationEvent.requestPermission()
                     .then(response => {
                         if (response === 'granted') {
-                            window.addEventListener('deviceorientation', handleOrientation, true);
+                            window.addEventListener('deviceorientation', handleDeviceOrientation, true);
                         }
                     })
                     .catch(console.error);
             } else {
-                // Для других устройств
-                window.addEventListener('deviceorientation', handleOrientation, true);
+                window.addEventListener('deviceorientation', handleDeviceOrientation, true);
             }
         }
 
+        window.addEventListener('orientationchange', updateScreenOrientation);
+
         return () => {
             if (watchId) navigator.geolocation.clearWatch(watchId);
-            window.removeEventListener('deviceorientation', handleOrientation);
+            window.removeEventListener('deviceorientation', handleDeviceOrientation);
+            window.removeEventListener('orientationchange', updateScreenOrientation);
         };
-    }, [map]);
+    }, [map, watchId]);
+
+    // ... (rest of the component) ...
+    // В рендере у нас есть {heading !== null && ...}, поэтому дополнительной логики не нужно
 
     if (error) {
         return (
-            <Popup position={map.getCenter()}>
-                {error}<br/>
-                Проверьте разрешения браузера
+            <Popup position={map.getCenter()} closeButton={false}>
+                <div style={{ textAlign: 'center' }}>
+                    <strong>{error}</strong>
+                    {permissionDenied ? (
+                        <>
+                            <p>Пожалуйста, разрешите доступ к геолокации в настройках браузера</p>
+                            <button
+                                onClick={requestLocationPermission}
+                                style={{
+                                    padding: '5px 10px',
+                                    background: '#4CAF50',
+                                    color: 'white',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                Повторить попытку
+                            </button>
+                        </>
+                    ) : (
+                        <p>Проверьте, включена ли геолокация на вашем устройстве</p>
+                    )}
+                </div>
             </Popup>
         );
     }

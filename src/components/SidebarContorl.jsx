@@ -13,7 +13,9 @@ const SidebarLayerControl = ({
                                  onToggleOverlay,
                                  activeEra,
                                  musicPaused,
-                                 onMusicPause
+                                 onMusicPause,
+                                 showLabels,
+                                 onToggleLabels
                              }) => {
     const [isMobile, setIsMobile] = useState(false);
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -60,14 +62,14 @@ const SidebarLayerControl = ({
                 const key = `${layer.era}-${index}`;
                 const color = ERA_COLORS[layer.era] || "#888";
                 return (
-                    <div key={key} className="layer-block" style={{ borderLeft: `6px solid ${color}` }}>
+                    <div key={key} className="layer-block" style={{borderLeft: `6px solid ${color}`}}>
                         {layer.title && <label className="checkbox-label">
                             <input
                                 type="checkbox"
                                 checked={!!visibleHistorical[key]}
                                 onChange={() => onToggleHistorical(key)}
                             />
-                            <span className="custom-checkbox" style={{ borderColor: color }} />
+                            <span className="custom-checkbox" style={{borderColor: color}}/>
                             <span className="layer-name">{layer.era}</span>
                             <span className="layer-tag">Карта</span>
                         </label>}
@@ -77,22 +79,31 @@ const SidebarLayerControl = ({
                                 checked={!!visibleOverlays[key]}
                                 onChange={() => onToggleOverlay(key)}
                             />
-                            <span className="custom-checkbox" style={{ borderColor: color }} />
+                            <span className="custom-checkbox" style={{borderColor: color}}/>
                             <span className="layer-name">{layer.era}</span>
                             <span className="layer-tag">Объекты</span>
                         </label>
                     </div>
                 );
             })}
+            <label className="checkbox-label" style={{margin: 0}}>
+                <input
+                    type="checkbox"
+                    checked={showLabels}
+                    onChange={onToggleLabels}
+                />
+                <span className="custom-checkbox" style={{borderColor: activeEraColor}}/>
+                <span className="layer-name">Подписи</span>
+            </label>
         </>
     );
 
     const renderMusicControl = () => activeEra && (
-        <div className="music-control-block">
+        <div className="music-control-block" style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
             <button
                 onClick={onMusicPause}
                 className="music-button"
-                style={{ backgroundColor: activeEraColor }}
+                style={{backgroundColor: activeEraColor}}
             >
                 {musicPaused ? '▶' : '⏸'}
             </button>

@@ -1,0 +1,13 @@
+.feature-label {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    color: #333;
+    font-size: 12px;
+    white-space: nowrap;
+    margin-top: 10px;
+}
+
+.feature-label::before {
+    display: none;
+}
